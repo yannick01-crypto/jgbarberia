@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JGBARBERIA.TURNOS</title>
+  <meta name="theme-color" content="#111827" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="screen screen-hero" id="hero">
+      <div class="hero-card">
+        <div class="hero-image">
+          <img src="./images/logo.jpg" alt="Logo JG Barbería" />
+        </div>
+        <p class="eyebrow">JGBARBERIA.TURNOS</p>
+        <h1>RESERVA TU TURNO</h1>
+        <p>Elige tu barbero y asegura tu cita.</p>
+        <button class="btn btn-primary" id="startButton">Reservar ahora</button>
+      </div>
+    </section>
+
+    <section class="screen screen-step hidden" id="stepBarber">
+      <div class="screen-top">
+        <button class="btn btn-ghost" id="backButton">← Volver</button>
+        <h2>Selecciona tu barbero</h2>
+      </div>
+      <div class="cards-grid">
+        <button class="barber-card" data-barber="JEREMIAS GANIM">
+          <strong>🧑‍🦱JEREMIAS GANIM</strong>
+          <p>Cortes modernos, línea precisa y estilo.</p>
+        </button>
+        <button class="barber-card" data-barber="MARIAN VERON">
+          <strong>👦MARIAN VERON</strong>
+          <p>Barbero premium para cortes y barba.</p>
+        </button>
+        <button class="barber-card" data-barber="ALEX GANDARIAS">
+          <strong>🧑ALEX GANDARIAS</strong>
+          <p>Atención personalizada y cortes a medida.</p>
+        </button>
+        <button class="barber-card" data-barber="LUNA UGARTE">
+          <strong>👩LUNA UGARTE</strong>
+          <p>Estilo único, moderno y elegante.</p>
+        </button>
+      </div>
+      <div class="screen-footer">
+        <p class="selected-label">Seleccionado: <span id="selectedBarber">Ninguno</span></p>
+        <button class="btn btn-primary" id="nextButton" disabled>Siguiente</button>
+      </div>
+    </section>
+
+    <section class="screen screen-step hidden" id="stepService">
+      <div class="screen-top">
+        <button class="btn btn-ghost" id="backToBarber">← Volver</button>
+        <h2>Elige un servicio</h2>
+      </div>
+      <div class="cards-grid">
+        <button class="service-card" data-service="CORTE CLASICO" data-price="15000" data-duration="30 minutos">
+          <strong>CORTE CLÁSICO</strong>
+          <p>$15.000 — Duración: 30 minutos</p>
+        </button>
+        <button class="service-card" data-service="CORTE Y BARBA" data-price="18000" data-duration="45 minutos">
+          <strong>CORTE Y BARBA</strong>
+          <p>$18.000 — Duración: 45 minutos</p>
+        </button>
+        <button class="service-card" data-service="CORTE PARA FEMENINOS" data-price="25000" data-duration="1h 15 minutos">
+          <strong>CORTE PARA FEMENINOS</strong>
+          <p>$25.000 — Duración: 1h 15 minutos</p>
+        </button>
+      </div>
+      <div class="screen-footer">
+        <p class="selected-label">Servicio: <span id="selectedService">Ninguno</span></p>
+        <button class="btn btn-primary" id="toScheduleButton" disabled>Siguiente</button>
+      </div>
+    </section>
+
+    <section class="screen screen-step hidden" id="stepSchedule">
+      <div class="screen-top">
+        <button class="btn btn-ghost" id="backToBarberFromSchedule">← Volver</button>
+        <h2>Elige día y horario</h2>
+      </div>
+      <div class="cards-grid">
+        <label style="display:block; width:100%;">
+          <strong>Fecha</strong>
+          <select id="dateSelect" style="width:100%; margin-top:0.5rem; padding:0.7rem; border-radius:0.8rem;"></select>
+        </label>
+        <label style="display:block; width:100%;">
+          <strong>Hora</strong>
+          <select id="timeSelect" style="width:100%; margin-top:0.5rem; padding:0.7rem; border-radius:0.8rem;"></select>
+        </label>
+      </div>
+      <div class="screen-footer">
+        <p class="selected-label">Seleccionado: <span id="selectedSchedule">Ninguno</span></p>
+        <button class="btn btn-primary" id="toLocationButton" disabled>Siguiente</button>
+      </div>
+    </section>
+
+    <section class="screen screen-step hidden" id="stepLocation">
+      <div class="screen-top">
+        <button class="btn btn-ghost" id="backToService">← Volver</button>
+        <h2>Ubicación</h2>
+      </div>
+      <div class="location-card">
+        <p>📍 Avenida Urquiza 53, Ciudad Benito Juarez</p>
+        <p>⌚ Horario: lun-sab 9:00 - 21:00</p>
+        <p>📲 WhatsApp: +54 2281-319498</p>
+      </div>
+      <div class="contenedor">
+        <img src="/images/shop.jpg" alt="Frente JG Barbería" class="success-image" loading="lazy" onerror="this.onerror=null; this.src='/images/shop.svg';" />
+      </div>
+      <div class="screen-footer">
+        <button class="btn btn-primary" id="confirmButton" disabled>Confirmar turno</button>
+      </div>
+    </section>
+
+    <section class="screen screen-step hidden" id="screenSuccess">
+      <div class="hero-card">
+        <p class="eyebrow">¡Listo!</p>
+        <h1>Turno reservado</h1>
+        <p id="successText">Te esperamos en Avenida Urquiza 53.</p>
+        <button class="btn btn-primary" id="homeButton">Volver al inicio</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const hero = document.getElementById('hero');
+    const stepBarber = document.getElementById('stepBarber');
+    const stepService = document.getElementById('stepService');
+    const stepSchedule = document.getElementById('stepSchedule');
+    const stepLocation = document.getElementById('stepLocation');
+    const screenSuccess = document.getElementById('screenSuccess');
+    const startButton = document.getElementById('startButton');
+    const backButton = document.getElementById('backButton');
+    const backToBarber = document.getElementById('backToBarber');
+    const nextButton = document.getElementById('nextButton');
+    const toScheduleButton = document.getElementById('toScheduleButton');
+    const backToBarberFromSchedule = document.getElementById('backToBarberFromSchedule');
+    const toLocationButton = document.getElementById('toLocationButton');
+    const backToService = document.getElementById('backToService');
+    const confirmButton = document.getElementById('confirmButton');
+    const homeButton = document.getElementById('homeButton');
+    const selectedBarberText = document.getElementById('selectedBarber');
+    const selectedServiceText = document.getElementById('selectedService');
+    const selectedScheduleText = document.getElementById('selectedSchedule');
+    const dateSelect = document.getElementById('dateSelect');
+    const timeSelect = document.getElementById('timeSelect');
+    const successText = document.getElementById('successText');
+
+    let selectedBarber = '';
+    let selectedService = '';
+    let selectedPrice = '';
+    let selectedDate = '';
+    let selectedTime = '';
+
+    const barberCards = document.querySelectorAll('.barber-card');
+    const serviceCards = document.querySelectorAll('.service-card');
+
+    function showScreen(screen) {
+      [hero, stepBarber, stepService, stepSchedule, stepLocation, screenSuccess].forEach(s => s.classList.add('hidden'));
+      screen.classList.remove('hidden');
+      window.scrollTo(0,0);
+    }
+
+    barberCards.forEach(card => {
+      card.addEventListener('click', () => {
+        selectedBarber = card.dataset.barber;
+        selectedBarberText.textContent = selectedBarber;
+        barberCards.forEach(c => c.classList.toggle('active', c === card));
+        nextButton.disabled = false;
+        // Clear time options when changing barber
+        selectedTime = '';
+        timeSelect.innerHTML = '';
+      });
+    });
+
+    serviceCards.forEach(card => {
+      card.addEventListener('click', () => {
+        selectedService = card.dataset.service;
+        selectedPrice = card.dataset.price;
+        selectedServiceText.textContent = `${selectedService} — $${Number(selectedPrice).toLocaleString()}`;
+        serviceCards.forEach(c => c.classList.toggle('active', c === card));
+        toScheduleButton.disabled = false;
+      });
+    });
+
+    function generateDateOptions(days = 21) {
+      const options = [];
+      const now = new Date();
+      for (let i = 0; i < days; i++) {
+        const d = new Date(now);
+        d.setDate(now.getDate() + i);
+        const day = d.getDay();
+        if (day === 0) continue;
+        const label = d.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short' });
+        const value = d.toISOString().split('T')[0];
+        options.push({ label, value });
+      }
+      return options;
+    }
+
+    // Horarios específicos por barbero y día de la semana
+    const barberSchedules = {
+      'JEREMIAS GANIM': {
+        1: ["14:00", "15:00", "16:00", "17:00", "18:00"],                    // Lunes
+        2: ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"],   // Martes
+        3: ["14:00", "15:00", "16:00", "17:00", "18:00", "19:00"],                // Miércoles
+        4: ["10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"],   // Jueves
+        5: ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"], // Viernes
+        6: ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]  // Sábado
+      },
+      'MARIAN VERON': {
+        1: ["16:30", "17:00", "18:00", "19:00", "20:30"],
+        2: ["15:00", "16:00", "17:00", "18:00", "19:00", "20:00"],
+        3: ["16:30", "17:00", "18:00", "19:00", "20:30"],
+        4: ["15:00", "16:00", "17:00", "18:00", "19:00", "20:00"],
+        5: ["14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"],
+        6: ["15:30", "16:00", "17:00", "18:00", "19:00", "21:00"]
+      },
+      'ALEX GANDARIAS': {
+        1: ["16:00", "17:00", "18:00", "19:00", "20:30"],
+        2: ["10:00", "11:00", "12:00", "13:00", "15:30", "16:00", "17:00", "18:00", "19:00"],
+        3: ["10:00", "11:00", "12:00", "13:00", "15:30", "16:00", "17:00", "18:00", "19:00"],
+        4: ["10:00", "11:00", "12:00", "13:00", "15:00", "16:00", "17:00", "18:00", "19:00"],
+        5: ["10:00", "11:00", "12:00", "13:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"],
+        6: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"]
+      },
+      'LUNA UGARTE': {
+        1: ["18:00", "19:00", "20:30"],
+        2: ["16:00", "17:00", "18:00", "19:00", "20:00"],
+        3: ["10:00", "11:00", "12:00", "16:00", "17:00", "18:00", "19:00", "20:30"],
+        4: ["16:00", "17:00", "18:00", "19:00", "20:30"],
+        5: ["10:00", "11:00", "12:30", "16:00", "17:00", "18:00", "19:00", "20:30"],
+        6: ["10:00", "11:00", "12:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"]
+      }
+    };
+
+    function generateTimeOptions(barber, selectedDateStr) {
+      const times = [];
+      if (!selectedDateStr) {
+        return times;
+      }
+      const date = new Date(selectedDateStr + 'T00:00:00');
+      const dayOfWeek = date.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+      
+      const schedule = barberSchedules[barber];
+      if (!schedule || !schedule[dayOfWeek]) {
+        return times;
+      }
+      
+      const timesList = schedule[dayOfWeek];
+      timesList.forEach(time => {
+        times.push(time);
+      });
+      return times;
+    }
+
+    function populateScheduleSelectors() {
+      if (dateSelect.options.length === 0) {
+        const dates = generateDateOptions(21);
+        dates.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d.value;
+          opt.textContent = d.label;
+          dateSelect.appendChild(opt);
+        });
+      }
+      // Populate times based on selected date and barber
+      updateTimeOptions();
+    }
+
+    function updateTimeOptions() {
+      if (!dateSelect.value || !selectedBarber) {
+        timeSelect.innerHTML = '';
+        selectedTime = '';
+        selectedScheduleText.textContent = 'Ninguno';
+        toLocationButton.disabled = true;
+        return;
+      }
+
+      const times = generateTimeOptions(selectedBarber, dateSelect.value);
+      timeSelect.innerHTML = '';
+      selectedTime = '';
+
+      if (!times.length) {
+        selectedScheduleText.textContent = 'Ninguno';
+        toLocationButton.disabled = true;
+        return;
+      }
+
+      times.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        timeSelect.appendChild(opt);
+      });
+
+      selectedTime = timeSelect.value;
+      updateSelectedScheduleLabel();
+      toLocationButton.disabled = !(selectedDate && selectedTime);
+    }
+
+    dateSelect.addEventListener('change', () => {
+      selectedDate = dateSelect.value;
+      updateTimeOptions();
+      updateSelectedScheduleLabel();
+      toLocationButton.disabled = !(selectedDate && selectedTime);
+    });
+
+    timeSelect.addEventListener('change', () => {
+      selectedTime = timeSelect.value;
+      updateSelectedScheduleLabel();
+      toLocationButton.disabled = !(selectedDate && selectedTime);
+    });
+
+    function updateSelectedScheduleLabel() {
+      if (selectedDate && selectedTime) {
+        const d = new Date(selectedDate);
+        const label = `${d.toLocaleDateString('es-ES')} ${selectedTime}`;
+        selectedScheduleText.textContent = label;
+      } else {
+        selectedScheduleText.textContent = 'Ninguno';
+      }
+    }
+
+    startButton.addEventListener('click', () => showScreen(stepBarber));
+    backButton.addEventListener('click', () => showScreen(hero));
+    backToBarber.addEventListener('click', () => showScreen(stepBarber));
+    nextButton.addEventListener('click', () => {
+      if (!selectedBarber) return;
+      showScreen(stepService);
+    });
+
+    toScheduleButton.addEventListener('click', () => {
+      if (!selectedService) return;
+      populateScheduleSelectors();
+      showScreen(stepSchedule);
+    });
+
+    backToBarberFromSchedule.addEventListener('click', () => showScreen(stepBarber));
+
+    toLocationButton.addEventListener('click', () => {
+      if (!selectedDate || !selectedTime) return;
+      showScreen(stepLocation);
+      confirmButton.disabled = false;
+    });
+
+    backToService.addEventListener('click', () => showScreen(stepService));
+
+    confirmButton.addEventListener('click', () => {
+      const datetime = `${selectedDate}T${selectedTime}:00`;
+      const booking = {
+        barber: selectedBarber,
+        service: selectedService,
+        price: selectedPrice,
+        datetime,
+        hoursBefore: 1
+      };
+
+      fetch('/api/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(booking)
+      }).then(res => {
+        if (!res.ok) throw new Error('Error al reservar');
+        return res.json();
+      }).then(data => {
+        successText.textContent = data.message || `Has reservado ${selectedService} con ${selectedBarber} el ${selectedScheduleText.textContent}. Precio: $${Number(selectedPrice).toLocaleString()}. Te esperamos en Avenida Urquiza 53.`;
+        showScreen(screenSuccess);
+      }).catch(err => {
+        alert('No se pudo completar la reserva. Intenta nuevamente.');
+        console.error(err);
+      });
+    });
+
+    homeButton.addEventListener('click', () => {
+      selectedBarber = '';
+      selectedService = '';
+      selectedPrice = '';
+      selectedDate = '';
+      selectedTime = '';
+      selectedBarberText.textContent = 'Ninguno';
+      selectedServiceText.textContent = 'Ninguno';
+      selectedScheduleText.textContent = 'Ninguno';
+      confirmButton.disabled = true;
+      nextButton.disabled = true;
+      toScheduleButton.disabled = true;
+      toLocationButton.disabled = true;
+      barberCards.forEach(c => c.classList.remove('active'));
+      serviceCards.forEach(c => c.classList.remove('active'));
+      dateSelect.innerHTML = '';
+      timeSelect.innerHTML = '';
+      showScreen(hero);
+    });
+  </script>
+  </body>
+</html>
